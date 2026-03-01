@@ -15,6 +15,7 @@ public:
     std::vector<Point> getPoints(int offsetX = 0, int offsetY = 0) const;
     TetrominoType type() const { return m_type; }
     QColor color() const;
+    static QColor getColorForType(int type);
 
 private:
     TetrominoType m_type;

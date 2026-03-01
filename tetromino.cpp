@@ -42,3 +42,15 @@ QColor Tetromino::color() const {
     default: return Qt::transparent;
     }
 }
+QColor Tetromino::getColorForType(int type) {
+    switch (static_cast<TetrominoType>(type)) {
+    case I: return Qt::cyan;
+    case J: return Qt::blue;
+    case L: return QColor(255, 165, 0);
+    case O: return Qt::yellow;
+    case S: return Qt::green;
+    case T: return QColor(128, 0, 128);
+    case Z: return Qt::red;
+    default: return Qt::transparent;
+    }
+}

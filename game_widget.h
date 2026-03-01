@@ -19,6 +19,8 @@ protected:
 private slots:
     void gameStep();
 
+signals:
+    void escapePressed();
 private:
     GameLogic m_game;
     QTimer *m_timer;

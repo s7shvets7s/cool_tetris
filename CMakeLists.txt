@@ -11,6 +11,7 @@ qt_add_executable(cool_tetris
     tetromino.h tetromino.cpp
     game_logic.h game_logic.cpp
     game_widget.h game_widget.cpp
+    mainwindow.h mainwindow.cpp
 
 
 

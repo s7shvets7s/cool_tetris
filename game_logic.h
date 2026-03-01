@@ -14,7 +14,7 @@ public:
     GameLogic();
     void moveLeft();
     void moveRight();
-    bool moveDown(); // Возвращает false, если фигура зафиксирована
+    bool moveDown();
     void rotate();
 
     int getCell(int x, int y) const { return board[y][x]; }
