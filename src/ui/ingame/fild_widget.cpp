@@ -7,7 +7,7 @@ FildWidget::FildWidget(QWidget *parent) : QWidget(parent) {
     connect(m_timer, &QTimer::timeout, this, &FildWidget::gameStep);
 
     m_timer->start(500);
-    setFixedSize(m_game.WIDTH * CELL_SIZE, m_game.HEIGHT * CELL_SIZE);
+    setFixedSize((m_game.WIDTH * CELL_SIZE)+20, (m_game.HEIGHT * CELL_SIZE)+20);
 
     inputTimer = new QTimer(this);
     connect(inputTimer, &QTimer::timeout, this, &FildWidget::processInput);
@@ -20,10 +20,21 @@ FildWidget::FildWidget(QWidget *parent) : QWidget(parent) {
 void FildWidget::paintEvent(QPaintEvent *) {
     QPainter painter(this);
 
+    painter.setPen(QColor(40, 40, 40));
+    painter.setBrush(Qt::NoBrush);
 
+    for(int y = 0; y <= m_game.HEIGHT+1; ++y) {
+
+        painter.drawLine(0, y * CELL_SIZE, m_game.WIDTH * CELL_SIZE, y * CELL_SIZE);
+    }
+    for(int x = 0; x <= m_game.WIDTH+1; ++x) {
+
+        painter.drawLine(x * CELL_SIZE, 0, x * CELL_SIZE, m_game.HEIGHT * CELL_SIZE);
+    }
     for(int y = 0; y < m_game.HEIGHT; ++y) {
         for(int x = 0; x < m_game.WIDTH; ++x) {
             int typeIndex = m_game.getCell(x, y);
+
             if(typeIndex > 0) {
 
 

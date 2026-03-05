@@ -25,9 +25,11 @@ public:
     Point curPos() const { return {m_x, m_y}; }
     void swapPoketPiece();
     Tetromino getPoketPiece() const{return m_poketPiece;}
+    int getScore() const {return score;}
 signals:
     void nextPiecesChanged();
     void pocketChanged();
+    void scoreChanged();
 private:
     void spawnPiece();
     bool checkCollision(int dx, int dy, const Tetromino& piece);
@@ -35,13 +37,14 @@ private:
     void clearLines();
 
 
-
+    int score;
+    void updateScore(int countLines);
     int board[HEIGHT][WIDTH];
     Tetromino m_curPiece;
     Tetromino m_poketPiece;
     bool m_canSwap;
     int m_x, m_y;
-    int m_score = 0;
+
     std::deque<Tetromino> m_nextPieces;
 };
 

@@ -3,6 +3,7 @@
 #include <ctime>
 
 GameLogic::GameLogic() {
+    score=0;
     for (int y = 0; y < HEIGHT; ++y) {
         for (int x = 0; x < WIDTH; ++x) {
             board[y][x] = 0;
@@ -81,6 +82,7 @@ void GameLogic::freezePiece() {
 }
 
 void GameLogic::clearLines() {
+    int countLines=0;
     for (int y = HEIGHT - 1; y >= 0; --y) {
         bool isFull = true;
         for (int x = 0; x < WIDTH; ++x) {
@@ -95,10 +97,25 @@ void GameLogic::clearLines() {
                     board[ty][tx] = board[ty - 1][tx];
                 }
             }
+            countLines+=1;
             for (int tx = 0; tx < WIDTH; ++tx) board[0][tx] = 0;
             y++;
         }
     }
+    updateScore(countLines);
+}
+
+void GameLogic::updateScore(int countLines)
+{
+    switch (countLines) {
+    case 1: score+=500; break;
+    case 2: score+=1500; break;
+    case 3: score+=2000; break;
+    case 4: score+=3000; break;
+    default:
+        break;
+    }
+    emit scoreChanged();
 }
 
 void GameLogic::swapPoketPiece()
