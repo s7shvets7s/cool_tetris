@@ -4,6 +4,7 @@
 #include <QObject>
 #include <vector>
 #include <deque>
+#include <QTimer>
 #include "tetromino.h"
 
 class GameLogic : public QObject {
@@ -26,19 +27,38 @@ public:
     void swapPoketPiece();
     Tetromino getPoketPiece() const{return m_poketPiece;}
     int getScore() const {return score;}
+    
+    // Управление игрой
+    void start();
+    void pause();
+    void resume();
+    bool isPaused() const { return m_isPaused; }
+    
+    // Уровни и скорость
+    int getLevel() const { return level; }
+    int getLinesCleared() const { return totalLines; }
+    int getInterval() const { return currentInterval; }
+    
 signals:
     void nextPiecesChanged();
     void pocketChanged();
     void scoreChanged();
+    void levelChanged(int newLevel);
+    void tick();
+
+private slots:
+    void onTimerTick();
+
 private:
     void spawnPiece();
     bool checkCollision(int dx, int dy, const Tetromino& piece);
     void freezePiece();
     void clearLines();
-
+    void updateScore(int countLines);
+    void updateSpeed();
+    int calculateInterval(int lvl);
 
     int score;
-    void updateScore(int countLines);
     int board[HEIGHT][WIDTH];
     Tetromino m_curPiece;
     Tetromino m_poketPiece;
@@ -46,6 +66,14 @@ private:
     int m_x, m_y;
 
     std::deque<Tetromino> m_nextPieces;
+    
+    // Таймер и скорость
+    QTimer *m_timer;
+    bool m_isPaused;
+    int level;
+    int totalLines;
+    int linesToNextLevel;
+    int currentInterval;
 };
 
 #endif

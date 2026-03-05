@@ -1,9 +1,15 @@
 #include "game_logic.h"
 #include <algorithm>
 #include <ctime>
+#include <cmath>
 
 GameLogic::GameLogic() {
-    score=0;
+    score = 0;
+    level = 0;
+    totalLines = 0;
+    linesToNextLevel = 10;
+    m_isPaused = false;
+    
     for (int y = 0; y < HEIGHT; ++y) {
         for (int x = 0; x < WIDTH; ++x) {
             board[y][x] = 0;
@@ -13,6 +19,49 @@ GameLogic::GameLogic() {
         m_nextPieces.push_back(Tetromino(static_cast<TetrominoType>((rand() % 7) + 1)));
     }
     spawnPiece();
+    
+    // Инициализация таймера
+    m_timer = new QTimer(this);
+    connect(m_timer, &QTimer::timeout, this, &GameLogic::onTimerTick);
+    updateSpeed();
+}
+
+void GameLogic::start() {
+    m_timer->start(currentInterval);
+}
+
+void GameLogic::pause() {
+    if (!m_isPaused) {
+        m_isPaused = true;
+        m_timer->stop();
+    }
+}
+
+void GameLogic::resume() {
+    if (m_isPaused) {
+        m_isPaused = false;
+        m_timer->start(currentInterval);
+    }
+}
+
+void GameLogic::onTimerTick() {
+    moveDown();
+    emit tick();
+}
+
+int GameLogic::calculateInterval(int lvl) {
+    // Формула скорости как в классическом тетрисе (Nintendo)
+    // Каждые 10 линий уровень повышается, скорость увеличивается
+    // Минимальный интервал 16мс (около 60 FPS)
+    if (lvl <= 0) return 1000;
+    return std::max(16, (int)(1000 * std::pow(0.85, lvl)));
+}
+
+void GameLogic::updateSpeed() {
+    currentInterval = calculateInterval(level);
+    if (!m_isPaused) {
+        m_timer->setInterval(currentInterval);
+    }
 }
 
 void GameLogic::spawnPiece() {
@@ -25,6 +74,13 @@ void GameLogic::spawnPiece() {
     if (checkCollision(m_x, m_y, m_curPiece)) {
         for (int y = 0; y < HEIGHT; ++y)
             for (int x = 0; x < WIDTH; ++x) board[y][x] = 0;
+        level = 0;
+        totalLines = 0;
+        linesToNextLevel = 10;
+        updateSpeed();
+        score = 0;
+        emit levelChanged(0);
+        emit scoreChanged();
     }
     emit nextPiecesChanged();
 }
@@ -65,8 +121,6 @@ void GameLogic::rotate() {
 
 void GameLogic::instaMoveDown()
 {
-
-
     while (!checkCollision(m_x, m_y + 1, m_curPiece)) {
         m_y++;
     }
@@ -102,7 +156,17 @@ void GameLogic::clearLines() {
             y++;
         }
     }
-    updateScore(countLines);
+    if (countLines > 0) {
+        totalLines += countLines;
+
+        if (totalLines >= linesToNextLevel) {
+            level++;
+            linesToNextLevel += 10;
+            updateSpeed();
+            emit levelChanged(level);
+        }
+        updateScore(countLines);
+    }
 }
 
 void GameLogic::updateScore(int countLines)
@@ -130,12 +194,11 @@ void GameLogic::swapPoketPiece()
         std::swap(m_poketPiece,m_curPiece);
         m_x = WIDTH / 2 - 1;
         m_y = 0;
-
-
     }
     m_canSwap=false;
     emit pocketChanged();
 }
+
 std::vector<Tetromino> GameLogic::getNextPieces() const {
     return {m_nextPieces.begin(), m_nextPieces.end()};
 }

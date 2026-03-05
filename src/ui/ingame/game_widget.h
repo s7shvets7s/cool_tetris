@@ -23,7 +23,7 @@ public:
     QVBoxLayout *midVLayout;
      QVBoxLayout *rightVLayout;
 
-    FildWidget* fildWidget ;
+    FildWidget* fildWidget;
     NextPiecesWidget *nextWidget ;
     PoketPieceWidget *poketPieceWodget;
     ScoreWidget *scoreWidget;

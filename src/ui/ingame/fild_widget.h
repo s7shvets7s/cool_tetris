@@ -8,30 +8,36 @@
 #include <QKeyEvent>
 #include "game_logic.h"
 #include <QElapsedTimer>
+
 class FildWidget : public QWidget {
     Q_OBJECT
 public:
     FildWidget(QWidget *parent = nullptr);
-    const GameLogic& getLogic() const { return m_game; };
+    const GameLogic& getLogic() const { return m_game; }
+    GameLogic& getLogic() { return m_game; }
 
 protected:
     void paintEvent(QPaintEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
     void keyReleaseEvent(QKeyEvent *event) override;
-private slots:
+
+public slots:
     void gameStep();
 
 signals:
     void escapePressed();
+
 private:
     GameLogic m_game;
-    QTimer *m_timer;
     QSet<int> pressedKeys;
     QTimer *inputTimer;
-     int CELL_SIZE;
+    int CELL_SIZE;
     void processInput();
     QElapsedTimer rotateTimer;
     const int ROTATE_COOLDOWN = 200;
+
+public:
+    void setInputTimerEnabled(bool enabled);
 };
 
 #endif
