@@ -28,23 +28,26 @@ public:
     Tetromino getPoketPiece() const{return m_poketPiece;}
     int getScore() const {return score;}
     
-    // Управление игрой
+
     void start();
     void pause();
     void resume();
+    void restart();
     bool isPaused() const { return m_isPaused; }
     
-    // Уровни и скорость
+
     int getLevel() const { return level; }
     int getLinesCleared() const { return totalLines; }
     int getInterval() const { return currentInterval; }
-    
+
+
 signals:
     void nextPiecesChanged();
     void pocketChanged();
     void scoreChanged();
     void levelChanged(int newLevel);
     void tick();
+    void gameEnd();
 
 private slots:
     void onTimerTick();
@@ -54,7 +57,8 @@ private:
     bool checkCollision(int dx, int dy, const Tetromino& piece);
     void freezePiece();
     void clearLines();
-    void updateScore(int countLines);
+    void updateScoreLine(int countLines);
+    void updateScoreDrope(bool isDropDown);
     void updateSpeed();
     int calculateInterval(int lvl);
 
@@ -64,7 +68,7 @@ private:
     Tetromino m_poketPiece;
     bool m_canSwap;
     int m_x, m_y;
-
+    bool isGameEnd;
     std::deque<Tetromino> m_nextPieces;
     
     // Таймер и скорость

@@ -12,12 +12,14 @@ public:
     explicit PauseWidget(QWidget *parent = nullptr);
 signals:
     void backInGame();
+    void startNewGame();
     void onExitClicked();
 private:
 
     QVBoxLayout *layout;
     QPushButton *btnStart;
     QPushButton *btnExit ;
+    QPushButton *btnNewGame;
     QLabel *title;
 signals:
 };

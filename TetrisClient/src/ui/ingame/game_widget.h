@@ -37,6 +37,7 @@ public:
 private slots:
     void pauseOff();
     void pauseOn();
+    void restart();
 
 signals:
     void escapePressed();

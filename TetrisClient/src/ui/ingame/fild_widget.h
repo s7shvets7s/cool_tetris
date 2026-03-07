@@ -16,6 +16,7 @@ public:
     const GameLogic& getLogic() const { return m_game; }
     GameLogic& getLogic() { return m_game; }
 
+
 protected:
     void paintEvent(QPaintEvent *event) override;
     void keyPressEvent(QKeyEvent *event) override;
@@ -23,7 +24,7 @@ protected:
 
 public slots:
     void gameStep();
-
+    void restart();
 signals:
     void escapePressed();
 

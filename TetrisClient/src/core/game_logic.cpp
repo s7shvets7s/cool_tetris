@@ -9,7 +9,7 @@ GameLogic::GameLogic() {
     totalLines = 0;
     linesToNextLevel = 10;
     m_isPaused = false;
-    
+
     for (int y = 0; y < HEIGHT; ++y) {
         for (int x = 0; x < WIDTH; ++x) {
             board[y][x] = 0;
@@ -20,10 +20,11 @@ GameLogic::GameLogic() {
     }
     spawnPiece();
     
-    // Инициализация таймера
+
     m_timer = new QTimer(this);
     connect(m_timer, &QTimer::timeout, this, &GameLogic::onTimerTick);
     updateSpeed();
+     start();
 }
 
 void GameLogic::start() {
@@ -42,6 +43,35 @@ void GameLogic::resume() {
         m_isPaused = false;
         m_timer->start(currentInterval);
     }
+}
+
+void GameLogic::restart()
+{
+    score = 0;
+    level = 0;
+    totalLines = 0;
+    linesToNextLevel = 10;
+    m_isPaused = false;
+    m_nextPieces.clear();
+    m_poketPiece=Empty;
+
+
+    emit pocketChanged();
+    emit scoreChanged();
+    for (int y = 0; y < HEIGHT; ++y) {
+        for (int x = 0; x < WIDTH; ++x) {
+            board[y][x] = 0;
+        }
+    }
+    for(int i = 0; i < 4; ++i) {
+        m_nextPieces.push_back(Tetromino(static_cast<TetrominoType>((rand() % 7) + 1)));
+    }
+    spawnPiece();
+
+
+
+    updateSpeed();
+    start();
 }
 
 void GameLogic::onTimerTick() {
@@ -106,6 +136,7 @@ bool GameLogic::moveDown() {
         m_y++;
         return true;
     } else {
+        updateScoreDrope(false);
         freezePiece();
         return false;
     }
@@ -124,6 +155,7 @@ void GameLogic::instaMoveDown()
     while (!checkCollision(m_x, m_y + 1, m_curPiece)) {
         m_y++;
     }
+    updateScoreDrope(true);
     freezePiece();
 }
 
@@ -165,20 +197,26 @@ void GameLogic::clearLines() {
             updateSpeed();
             emit levelChanged(level);
         }
-        updateScore(countLines);
+        updateScoreLine(countLines);
     }
 }
 
-void GameLogic::updateScore(int countLines)
+void GameLogic::updateScoreLine(int countLines)
 {
     switch (countLines) {
-    case 1: score+=500; break;
-    case 2: score+=1500; break;
-    case 3: score+=2000; break;
-    case 4: score+=3000; break;
+    case 1: score+=100*(level+1); break;
+    case 2: score+=300*(level+1); break;
+    case 3: score+=500*(level+1); break;
+    case 4: score+=1200*(level+1); break;
     default:
         break;
     }
+    emit scoreChanged();
+}
+
+void GameLogic::updateScoreDrope(bool isDropDown)
+{
+    score+= isDropDown ? 4:2;
     emit scoreChanged();
 }
 

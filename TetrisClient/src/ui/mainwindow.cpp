@@ -21,15 +21,14 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 }
 
 void MainWindow::onStartClicked() {
+   // gameWidget->fildWidget->getLogic().start();
     stackedWidget->setCurrentIndex(1);
     gameWidget->setFocus();
-    // Запускаем таймер игры
-   // gameWidget->fildWidget->getLogic().start();
+
 }
 
 void MainWindow::escClicked() {
-    // Если игра на паузе - просто выходим в меню
-    // Если не на паузе - ставим на паузу и выходим
+
     // if (!gameWidget->fildWidget->getLogic().isPaused()) {
     //     gameWidget->fildWidget->getLogic().pause();
     // }

@@ -14,6 +14,12 @@ FildWidget::FildWidget(QWidget *parent) : QWidget(parent) {
     rotateTimer.start();
 }
 
+void FildWidget::restart()
+{
+    m_game.restart();
+    pressedKeys.clear();
+}
+
 void FildWidget::paintEvent(QPaintEvent *) {
     QPainter painter(this);
 
@@ -62,6 +68,7 @@ void FildWidget::processInput() {
     if (pressedKeys.contains(Qt::Key_Left))  m_game.moveLeft();
     if (pressedKeys.contains(Qt::Key_Right)) m_game.moveRight();
     if (pressedKeys.contains(Qt::Key_Down))  m_game.moveDown();
+    if (pressedKeys.contains(Qt::Key_R))  m_game.restart();
     if (pressedKeys.contains(Qt::Key_Up)) {
         if (rotateTimer.elapsed() > ROTATE_COOLDOWN) {
             m_game.rotate();

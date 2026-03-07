@@ -41,6 +41,8 @@ GameWidget::GameWidget(QWidget *parent)
 
     connect(pauseWidget, &PauseWidget::onExitClicked, this, &GameWidget::escapePressed);
     connect(pauseWidget, &PauseWidget::backInGame, this, &GameWidget::pauseOff);
+    connect(pauseWidget, &PauseWidget::startNewGame, this, &GameWidget::restart);
+
     connect(fildWidget, &FildWidget::escapePressed, this, &GameWidget::pauseOn);
 }
 
@@ -54,6 +56,13 @@ void GameWidget::pauseOn() {
     pauseWidget->show();
     pauseWidget->raise();
     pauseWidget->setFocus();
+}
+
+void GameWidget::restart()
+{
+    fildWidget->restart();
+    fildWidget->setInputTimerEnabled(true);
+    pauseWidget->hide();
 }
 
 void GameWidget::pauseOff() {
