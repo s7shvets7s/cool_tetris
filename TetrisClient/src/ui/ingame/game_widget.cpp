@@ -44,7 +44,7 @@ GameWidget::GameWidget(QWidget *parent)
     connect(&fildWidget->getLogic(), &GameLogic::pocketChanged, poketPieceWodget, QOverload<>::of(&PoketPieceWidget::update));
     connect(&fildWidget->getLogic(), &GameLogic::scoreChanged, scoreWidget, QOverload<>::of(&ScoreWidget::update));
     connect(&fildWidget->getLogic(), &GameLogic::gameEnd, this, &GameWidget::showGameOver);
-
+    connect(&fildWidget->getLogic(), &GameLogic::gameEnd, this, &GameWidget::gameEnd);
     connect(pauseWidget, &PauseWidget::onExitClicked, this, &GameWidget::escapePressed);
     connect(pauseWidget, &PauseWidget::backInGame, this, &GameWidget::pauseOff);
     connect(pauseWidget, &PauseWidget::startNewGame, this, &GameWidget::restart);

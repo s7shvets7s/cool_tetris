@@ -18,8 +18,8 @@ protected:
         QPainter painter(this);
         auto next = m_game.getNextPieces();
         int cellSize = 25;
-
-        for (int i = 0; i < 3; ++i) {
+            //?????????????????????????????
+        for (size_t i = 0; i < std::min(next.size(), static_cast<size_t>(3)); ++i){
             Tetromino piece = next[i];
             painter.setBrush(piece.color());
 

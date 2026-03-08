@@ -16,6 +16,7 @@ protected:
     void paintEvent(QPaintEvent *) override {
         QPainter painter(this);
         Tetromino poket = m_game.getPoketPiece();
+        if (poket.type() == Empty) return;
         int cellSize = 25;
 
 

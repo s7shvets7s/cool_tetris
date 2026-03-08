@@ -27,6 +27,7 @@ public slots:
     void restart();
 signals:
     void escapePressed();
+    void gameEnd();
 
 private:
     GameLogic m_game;

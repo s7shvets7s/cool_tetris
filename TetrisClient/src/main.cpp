@@ -4,7 +4,7 @@
 #include "MainWindow.h"
 
 int main(int argc, char *argv[]) {
-    // Твой рандом остается
+
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
 
     QApplication app(argc, argv);

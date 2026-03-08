@@ -16,15 +16,16 @@ signals:
     void onStartClicked();
     void onExitClicked();
 private slots:
-
+    void updateBestScore();
+    void updateTotalLines();
 
 private:
-
-
     QVBoxLayout *layout;
     QPushButton *btnStart;
-    QPushButton *btnExit ;
+    QPushButton *btnExit;
     QLabel *title;
+    QLabel *bestScoreTitle;
+    QLabel *totalLinesTitle;
 };
 
 #endif // MENU_WIDGET_H

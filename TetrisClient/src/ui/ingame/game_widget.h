@@ -20,23 +20,28 @@ class GameWidget : public QWidget
 public:
      GameWidget(QWidget *parent = nullptr);
 
+
+    FildWidget* fildWidget;
+
+
+
+    void setFocus(Qt::FocusReason reason = Qt::OtherFocusReason);
+private:
     QHBoxLayout *hLayout ;
     QVBoxLayout *lefVLayout;
     QVBoxLayout *midVLayout;
     QVBoxLayout *rightVLayout;
+    QStackedWidget *stackedWidget;
 
-    FildWidget* fildWidget;
+    QWidget *gameLayer;
     NextPiecesWidget *nextWidget ;
     PoketPieceWidget *poketPieceWodget;
     ScoreWidget *scoreWidget;
-    QStackedWidget *stackedWidget;
-    QWidget *gameLayer;
+
+
     PauseWidget* pauseWidget;
     GameOverWidget* gameOverWidget;
-
-    void setFocus(Qt::FocusReason reason = Qt::OtherFocusReason);
-    
-private slots:
+public slots:
     void pauseOff();
     void pauseOn();
     void restart();
@@ -44,6 +49,7 @@ private slots:
 
 signals:
     void escapePressed();
+    void gameEnd();
 };
 
 #endif // GAME_WIDGET_H

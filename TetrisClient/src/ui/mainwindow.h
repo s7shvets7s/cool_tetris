@@ -14,6 +14,9 @@ public:
 private slots:
     void onStartClicked();
     void escClicked();
+   void onGameEnd();
+    //void onSaveSettings();
+    //void updateScores();
 private:
     QStackedWidget *stackedWidget;
     GameWidget * gameWidget;
