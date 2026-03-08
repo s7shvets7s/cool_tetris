@@ -5,6 +5,7 @@ find_package(Qt6 REQUIRED COMPONENTS Core Network)
 
 add_executable(TetrisServer
     src/main.cpp
+    src/myserver.h src/myserver.cpp
     
 )
 

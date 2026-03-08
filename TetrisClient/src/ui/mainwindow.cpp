@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "game_widget.h"
 #include "setting_manager.h"
+#include "network_manager.h"
 #include <QVBoxLayout>
 #include <QPushButton>
 #include <QLabel>
@@ -29,7 +30,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
 void MainWindow::onStartClicked() {
    // gameWidget->fildWidget->getLogic().start();
     stackedWidget->setCurrentIndex(1);
-  // gameWidget->res
+    gameWidget->restart();
     gameWidget->setFocus();
 
 }
@@ -52,6 +53,16 @@ void MainWindow::onGameEnd()
     SettingsManager::instance().updateCountGames();
     SettingsManager::instance().saveSettings();
     // scoresChanged() вызывается внутри updateTotalyCoutLines и updateMaxScore
+
+
+
+
+
+    NetworkManager::instance().sendScore(
+        SettingsManager::instance().nickname(),
+        gameWidget->fildWidget->getLogic().getScore(),
+        gameWidget->fildWidget->getLogic().getLinesCleared()
+        );
 }
 
 // void MainWindow::updateScores()

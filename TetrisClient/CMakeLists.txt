@@ -4,7 +4,7 @@ project(TetrisClient LANGUAGES CXX)
 find_package(Qt6 6.5 REQUIRED COMPONENTS Gui Widgets Network)
 
 qt_standard_project_setup()
-include_directories(src/core src/ui src/ui/menus src/ui/ingame src/settings)
+include_directories(src/core src/ui src/ui/menus src/ui/ingame src/settings src/network)
 
 qt_add_executable(TetrisClient
     WIN32 MACOSX_BUNDLE
@@ -27,12 +27,15 @@ qt_add_executable(TetrisClient
     src/ui/menus/menu_widget.h src/ui/menus/menu_widget.cpp
     src/ui/menus/setting_widget.h src/ui/menus/setting_widget.cpp
     src/settings/setting_manager.h src/settings/setting_manager.cpp
+    src/network/network_client.cpp
+    src/network/network_manager.h src/network/network_manager.cpp
 )
 
 target_link_libraries(TetrisClient
     PRIVATE
         Qt::Core
         Qt::Widgets
+        Qt::Network
 )
 
 include(GNUInstallDirs)
