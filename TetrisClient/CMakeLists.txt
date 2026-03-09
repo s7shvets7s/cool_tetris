@@ -1,11 +1,11 @@
 cmake_minimum_required(VERSION 3.19)
 project(TetrisClient LANGUAGES CXX)
 
-find_package(Qt6 6.5 REQUIRED COMPONENTS Gui Widgets Network)
+find_package(Qt6 6.5 REQUIRED COMPONENTS Gui Widgets Network Svg)
 
 qt_standard_project_setup()
 include_directories(src/core src/ui src/ui/menus src/ui/ingame src/settings src/network)
-
+set(CMAKE_AUTORCC ON)
 qt_add_executable(TetrisClient
     WIN32 MACOSX_BUNDLE
     src/main.cpp
@@ -29,6 +29,10 @@ qt_add_executable(TetrisClient
     src/settings/setting_manager.h src/settings/setting_manager.cpp
     src/network/network_client.cpp
     src/network/network_manager.h src/network/network_manager.cpp
+    resources.qrc
+    assets/icons/settings_icon.svg assets/icons/user_icon.svg
+    assets/icons/statistic_icon.svg
+    src/ui/menus/auth_form.ui
 )
 
 target_link_libraries(TetrisClient
@@ -36,6 +40,7 @@ target_link_libraries(TetrisClient
         Qt::Core
         Qt::Widgets
         Qt::Network
+        Qt::Svg
 )
 
 include(GNUInstallDirs)

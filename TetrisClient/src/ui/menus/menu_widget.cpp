@@ -1,13 +1,18 @@
 #include "menu_widget.h"
 #include "setting_manager.h"
 #include <QString>
+#include <Qstyle>
 
 MenuWidget::MenuWidget(QWidget *parent)
     : QWidget{parent}
 {
-    layout = new QVBoxLayout(this);
 
+    mainLayout = new QVBoxLayout(this);
+    settingsLayout=new QHBoxLayout();
+    mainLayout->addLayout(settingsLayout);
 
+    //mainLayout
+//////////////////////////////////////////////////////////////////////////////////////////////////
     bestScoreTitle = new QLabel("BEST SCORE: " + QString::number(SettingsManager::instance().getMaxScore()));
     bestScoreTitle->setStyleSheet("font-size: 36px; font-weight: bold; margin-bottom: 10px;");
     bestScoreTitle->setAlignment(Qt::AlignCenter);
@@ -32,22 +37,60 @@ MenuWidget::MenuWidget(QWidget *parent)
     btnExit->setStyleSheet(btnStyle);
 
 
-    layout->addWidget(bestScoreTitle);
-    layout->addWidget(totalLinesTitle);
-    layout->addStretch();
-    layout->addWidget(title);
-    layout->addWidget(btnStart);
-    layout->addWidget(btnExit);
-    layout->addStretch();
+     mainLayout->addWidget(title);
+     mainLayout->addStretch();
+    mainLayout->addWidget(bestScoreTitle);
+    mainLayout->addWidget(totalLinesTitle);
 
-    connect(btnStart, &QPushButton::clicked, this, &MenuWidget::onStartClicked);
-    connect(btnExit, &QPushButton::clicked, this, &MenuWidget::onExitClicked);
+     mainLayout->addWidget(btnStart);
+     mainLayout->addWidget(btnExit);
+     mainLayout->addStretch();
+
+     connect(btnStart, &QPushButton::clicked, this, &MenuWidget::onStartClicked);
+     connect(btnExit, &QPushButton::clicked, this, &MenuWidget::onExitClicked);
 
 
-    connect(&SettingsManager::instance(), &SettingsManager::scoresChanged,
-            this, &MenuWidget::updateBestScore);
-    connect(&SettingsManager::instance(), &SettingsManager::scoresChanged,
-            this, &MenuWidget::updateTotalLines);
+     connect(&SettingsManager::instance(), &SettingsManager::scoresChanged,
+             this, &MenuWidget::updateBestScore);
+     connect(&SettingsManager::instance(), &SettingsManager::scoresChanged,
+             this, &MenuWidget::updateTotalLines);
+//////////////////////////////////////////////////////////////////////////////////////////////////
+
+     //settingsLayout
+//////////////////////////////////////////////////////////////////////////////////////////////////
+     btnSettings = new QPushButton();
+     btnUser = new QPushButton();
+     btnStatistic = new QPushButton();
+     QIcon settingsIcon(":/settings_icon.svg");
+     QIcon userIcon(":/user_icon.svg");
+     QIcon statisticIcon(":/statistic_icon.svg");
+
+
+    btnSettings->setIcon(settingsIcon);
+    btnUser->setIcon(userIcon);
+    btnStatistic->setIcon(statisticIcon);
+
+    //btnSettings->setBaseSize(40,40);
+    btnSettings->setFixedSize(40,40);
+    btnUser->setFixedSize(40,40);
+    btnStatistic->setFixedSize(40,40);
+    settingsLayout->addWidget(btnSettings);
+    settingsLayout->addWidget(btnUser);
+    settingsLayout->addWidget(btnStatistic);
+    settingsLayout->setAlignment(Qt::AlignTop);
+    //settingsLayout
+
+
+
+
+
+
+
+
+
+
+////////////////////////////////////////////////////////////////////////////////////
+
 }
 
 void MenuWidget::updateBestScore() {

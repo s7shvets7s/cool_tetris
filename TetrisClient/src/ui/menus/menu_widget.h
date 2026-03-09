@@ -20,12 +20,25 @@ private slots:
     void updateTotalLines();
 
 private:
-    QVBoxLayout *layout;
+    QVBoxLayout *mainLayout;
+    QHBoxLayout *settingsLayout;
+
+
+    ////////////////////
     QPushButton *btnStart;
     QPushButton *btnExit;
     QLabel *title;
     QLabel *bestScoreTitle;
     QLabel *totalLinesTitle;
+    ////////////////////
+
+
+
+    ///////////////////////
+    QPushButton *btnSettings;
+    QPushButton *btnUser;
+    QPushButton *btnStatistic;
+    ///////////////////////
 };
 
 #endif // MENU_WIDGET_H
