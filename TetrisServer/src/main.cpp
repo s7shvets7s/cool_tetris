@@ -4,64 +4,94 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QDebug>
-#include <iostream>
-#include <windows.h>
-void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg) {
-    QByteArray localMsg = msg.toLocal8Bit();
-    std::cout << localMsg.constData() << std::endl;
-}
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <QSqlError>
+    #include <QFileInfo>
+
 class SimpleServer : public QTcpServer {
+    Q_OBJECT
+public:
+    SimpleServer(QObject *parent = nullptr) : QTcpServer(parent) {}
+
+protected:
     void incomingConnection(qintptr socketDescriptor) override {
         QTcpSocket* socket = new QTcpSocket(this);
         socket->setSocketDescriptor(socketDescriptor);
 
-        qDebug() << "Клиент подключился:" << socket->peerAddress();
+        qDebug() << "Клиент подключился:" << socket->peerAddress().toString();
 
-        QObject::connect(socket, &QTcpSocket::readyRead, [=]() {
+        connect(socket, &QTcpSocket::readyRead, this, [socket]() {
             QByteArray data = socket->readAll();
-            qDebug() << "Получено:" << data;
 
-            // Парсим JSON
+
             QJsonDocument doc = QJsonDocument::fromJson(data.trimmed());
+            if (doc.isNull() || !doc.isObject()) {
+                qDebug() << "Ошибка: Получены некорректные данные";
+                return;
+            }
+
             QJsonObject json = doc.object();
+            QString nickname = json["nickname"].toString();
+            int score = json["score"].toInt();
 
-            qDebug() << "Игрок:" << json["nickname"].toString()
-                     << "Счёт:" << json["score"].toInt()
-                     << "Линии:" << json["lines"].toInt();
+            qDebug() << "Данные игрока -> Имя:" << nickname << "Счёт:" << score;
 
-            socket->write("OK\n");
+
+            QSqlQuery query;
+            query.prepare("INSERT INTO TopResults (nickname, BestScore) VALUES (:name, :score)");
+            query.bindValue(":name", nickname);
+            query.bindValue(":score", score);
+
+            if (!query.exec()) {
+                qDebug() << "Ошибка записи в БД:" << query.lastError().text();
+                socket->write("ERROR\n");
+            } else {
+                qDebug() << "Запись успешно добавлена";
+                socket->write("OK\n");
+            }
         });
 
-        QObject::connect(socket, &QTcpSocket::disconnected, [=]() {
+        connect(socket, &QTcpSocket::disconnected, socket, &QTcpSocket::deleteLater);
+        connect(socket, &QTcpSocket::disconnected, []() {
             qDebug() << "Клиент отключился";
-            socket->deleteLater();
         });
     }
 };
 
 int main(int argc, char *argv[]) {
-// #ifdef Q_OS_WIN
-
-//     if (AllocConsole()) {
-
-//         FILE* fp;
-//         freopen_s(&fp, "CONOUT$", "w", stdout);
-//         freopen_s(&fp, "CONOUT$", "w", stderr);
-//         freopen_s(&fp, "CONIN$", "r", stdin);
-
-
-//         std::ios::sync_with_stdio();
-//     }
-// #endif
     QCoreApplication app(argc, argv);
-    //qInstallMessageHandler(myMessageOutput);
+
+
+    QSqlDatabase db = QSqlDatabase::addDatabase("QSQLITE");
+    db.setDatabaseName("testDB.db");
+
+    if (!db.open()) {
+        qDebug() << "Критическая ошибка: не удалось открыть БД:" << db.lastError().text();
+        return -1;
+    }
+    qDebug() << "База данных подключена.";
+
+
+    QSqlQuery query;
+    bool tableOk = query.exec("CREATE TABLE IF NOT EXISTS TopResults ("
+                              "id INTEGER PRIMARY KEY AUTOINCREMENT, "
+                              "nickname TEXT, "
+                              "BestScore INT)");
+    if (!tableOk) {
+        qDebug() << "Ошибка создания таблицы:" << query.lastError().text();
+    }
+
+
     SimpleServer server;
-    if (!server.listen(QHostAddress::LocalHost, 5000)) {
+    if (!server.listen(QHostAddress::Any, 5000)) {
         qDebug() << "Ошибка запуска сервера:" << server.errorString();
         return 1;
     }
 
-    qDebug() << "Сервер запущен на порту 5000";
-
+    qDebug() << "Сервер Tetris запущен на порту 5000";
+    qDebug() << "Путь к БД:" << QFileInfo(db.databaseName()).absoluteFilePath();
     return app.exec();
 }
+#include "main.moc"
+

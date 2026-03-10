@@ -9,8 +9,9 @@ int main(int argc, char *argv[]) {
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
 
     QApplication app(argc, argv);
-    QCoreApplication::setOrganizationName("aRecll");
+    QCoreApplication::setOrganizationName("s7shvets7s");
     QCoreApplication::setApplicationName("cool_tetris");
+    app.setWindowIcon(QIcon(":/app_icon.ico"));
     NetworkManager::instance().setServerAddress("127.0.0.1", 5000);
 
         // Подключение для отладки
