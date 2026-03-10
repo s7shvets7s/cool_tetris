@@ -4,6 +4,8 @@
 *~
 *.autosave
 *.a
+*.bd
+*.db
 *.core
 *.moc
 *.o
@@ -34,7 +36,8 @@ Thumbs.db
 *.rc
 /.qmake.cache
 /.qmake.stash
-
+personal/
+/personal/
 # qtcreator generated files
 *.pro.user*
 *.qbs.user*
@@ -81,4 +84,3 @@ CMakeLists.txt.user*
 .uic/
 /build*/
 
-/personal
