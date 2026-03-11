@@ -23,7 +23,7 @@
       <string notr="true">font-size: 24px; font-weight: bold;</string>
      </property>
      <property name="text">
-      <string>АВТОРИЗАЦИЯ</string>
+      <string>AUTHORIZATION</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -49,7 +49,7 @@
       <string notr="true">background: transparent;</string>
      </property>
      <property name="text">
-      <string>Никнейм:</string>
+      <string>NICKNAME</string>
      </property>
      <property name="alignment">
       <set>Qt::AlignmentFlag::AlignCenter</set>
@@ -62,7 +62,7 @@
       <string notr="true">padding: 8px; font-size: 14px; background: transparent;</string>
      </property>
      <property name="placeholderText">
-      <string>Введите никнейм</string>
+      <string>Enter your nickname</string>
      </property>
     </widget>
    </item>
@@ -85,7 +85,7 @@
       <string notr="true">font-size: 16px; padding: 10px; background: #333; color: white; border-radius: 5px;</string>
      </property>
      <property name="text">
-      <string>Войти</string>
+      <string>Continue</string>
      </property>
     </widget>
    </item>
@@ -95,7 +95,7 @@
       <string notr="true">font-size: 14px; padding: 8px; background: #555; color: white; border-radius: 5px;</string>
      </property>
      <property name="text">
-      <string>Назад</string>
+      <string>Back</string>
      </property>
     </widget>
    </item>

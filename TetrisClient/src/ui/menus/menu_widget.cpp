@@ -46,7 +46,7 @@ QWidget* MenuWidget::createMainMenu() {
 
     QString btnStyle = "QPushButton { font-size: 20px; padding: 10px; background: #333; color: white; border-radius: 5px; }"
                        "QPushButton:hover { background: #555; }";
-
+    //////////;)
     auto createSmallBtn = [&](const QString& iconPath) {
         auto *btn = new QPushButton(QIcon(iconPath), "");
         btn->setFixedSize(40, 40);
@@ -80,8 +80,8 @@ QWidget* MenuWidget::createMainMenu() {
     updateTotalLines();
 
 
-    auto *btnStart = new QPushButton("ИГРАТЬ");
-    auto *btnExit = new QPushButton("ВЫХОД");
+    auto *btnStart = new QPushButton("PLAY");
+    auto *btnExit = new QPushButton("EXIT");
     btnStart->setStyleSheet(btnStyle);
     btnExit->setStyleSheet(btnStyle);
 
@@ -113,14 +113,14 @@ QWidget* MenuWidget::createAuthFormPage() {
     return page;
 }
 
-// --- Реализация слотов ---
+
 
 void MenuWidget::updateBestScore() {
     m_bestScoreTitle->setText("BEST SCORE: " + QString::number(SettingsManager::instance().getMaxScore()));
 }
 
 void MenuWidget::updateTotalLines() {
-    m_totalLinesTitle->setText("ЛИНИИ: " + QString::number(SettingsManager::instance().totalyCoutLines()));
+    m_totalLinesTitle->setText("LINES: " + QString::number(SettingsManager::instance().totalyCoutLines()));
 }
 
 void MenuWidget::updateNicknameUI(const QString& nickname) {
@@ -128,7 +128,7 @@ void MenuWidget::updateNicknameUI(const QString& nickname) {
         m_nicknameLabel->setText(nickname);
         m_nicknameLabel->setStyleSheet("font-size: 18px; font-weight: bold; color: #4CAF50; background: transparent;");
     } else {
-        m_nicknameLabel->setText("Гость");
+        m_nicknameLabel->setText("GUEST");
         m_nicknameLabel->setStyleSheet("font-size: 18px; color: #888888; background: transparent;");
     }
 }

@@ -3,7 +3,7 @@
 GameOverWidget::GameOverWidget(QWidget *parent)
     : OverlayWidget{parent}
 {
-    title->setText("ИГРА ОКОНЧЕНА");
+    title->setText("GAME OVER");
     title->setStyleSheet("font-size: 40px; font-weight: bold; margin-bottom: 10px; color: #ff4444;");
     
     scoreLabel = new QLabel("Счёт: 0");
@@ -15,8 +15,8 @@ GameOverWidget::GameOverWidget(QWidget *parent)
     layout->addWidget(scoreLabel);
     layout->addSpacing(20);
     
-    btnNewGame = createButton("НАЧАТЬ ЗАНОВО");
-    btnExit = createButton("ВЫЙТИ В ГЛАВНОЕ МЕНЮ");
+    btnNewGame = createButton("PLAY AGAIN");
+    btnExit = createButton("EXIT ON MAIN MENU");
 
     layout->addWidget(btnNewGame);
     layout->addWidget(btnExit);
@@ -29,5 +29,5 @@ GameOverWidget::GameOverWidget(QWidget *parent)
 }
 
 void GameOverWidget::setFinalScore(int score) {
-    scoreLabel->setText(QString("Счёт: %1").arg(score));
+    scoreLabel->setText(QString("SCORE: %1").arg(score));
 }
