@@ -1,144 +1,151 @@
 #include "menu_widget.h"
 #include "setting_manager.h"
-#include <QString>
-#include <QStyle>
+#include "auth_form.h"
 
-MenuWidget::MenuWidget(QWidget *parent)
-    : QWidget{parent}
-{
-    mainLayout = new QVBoxLayout(this);
-    settingsLayout = new QHBoxLayout();
-    
-    stackedWidget = new QStackedWidget(this);
-    mainLayout->addWidget(stackedWidget);
+#include <QVBoxLayout>
+#include <QHBoxLayout>
+#include <QPushButton>
+#include <QLabel>
+#include <QStackedWidget>
+#include <QIcon>
+
+MenuWidget::MenuWidget(QWidget *parent) : QWidget{parent} {
+    setupUi();
 
     this->setStyleSheet(
+
         "background-image:  "
+
         "url(:/background_main.png);"
+
         );
-    mainMenuWidget = new QWidget(this);
-    QVBoxLayout *mainMenuLayout = new QVBoxLayout(mainMenuWidget);
-    mainMenuLayout->addLayout(settingsLayout);
-
-    bestScoreTitle = new QLabel("BEST SCORE: " + QString::number(SettingsManager::instance().getMaxScore()));
-    bestScoreTitle->setStyleSheet("font-size: 36px; font-weight: bold; margin-bottom: 10px; background: transparent;");
-    bestScoreTitle->setAlignment(Qt::AlignCenter);
-
-    totalLinesTitle = new QLabel("ЛИНИИ: " + QString::number(SettingsManager::instance().totalyCoutLines()));
-    totalLinesTitle->setStyleSheet("font-size: 20px; font-weight: bold; margin-bottom: 20px; color: #aaaaaa; background: transparent;");
-    totalLinesTitle->setAlignment(Qt::AlignCenter);
-
-    nicknameLabel = new QLabel();
-    QString nickname = SettingsManager::instance().nickname();
-    if (!nickname.isEmpty()) {
-        nicknameLabel->setText(nickname);
-        nicknameLabel->setStyleSheet("font-size: 18px; font-weight: bold; color: #4CAF50; background: transparent;");
-    } else {
-        nicknameLabel->setText("Гость");
-        nicknameLabel->setStyleSheet("font-size: 18px; color: #888888; background: transparent;");
-    }
-    nicknameLabel->setAlignment(Qt::AlignCenter);
-
-    title = new QLabel("QT TETRIS");
-    title->setStyleSheet("font-size: 40px; font-weight: bold; margin-bottom: 20px; background: transparent;");
-    title->setAlignment(Qt::AlignCenter);
-
-    btnStart = new QPushButton("ИГРАТЬ");
-    btnExit = new QPushButton("ВЫХОД");
-
-    QString btnStyle = "QPushButton { font-size: 20px; padding: 10px; background: #333; color: white; border-radius: 5px; }"
-                       "QPushButton:hover { background: #555; }";
-    btnStart->setStyleSheet(btnStyle);
-    btnExit->setStyleSheet(btnStyle);
-
-    mainMenuLayout->addWidget(title);
-    mainMenuLayout->addWidget(nicknameLabel);
-    mainMenuLayout->addStretch();
-    mainMenuLayout->addWidget(bestScoreTitle);
-    mainMenuLayout->addWidget(totalLinesTitle);
-    mainMenuLayout->addWidget(btnStart);
-    mainMenuLayout->addWidget(btnExit);
-    mainMenuLayout->addStretch();
-
-    connect(btnStart, &QPushButton::clicked, this, &MenuWidget::onStartClicked);
-    connect(btnExit, &QPushButton::clicked, this, &MenuWidget::onExitClicked);
-
     connect(&SettingsManager::instance(), &SettingsManager::scoresChanged,
             this, &MenuWidget::updateBestScore);
     connect(&SettingsManager::instance(), &SettingsManager::scoresChanged,
             this, &MenuWidget::updateTotalLines);
-
-
-    btnSettings = new QPushButton();
-    btnUser = new QPushButton();
-    btnStatistic = new QPushButton();
-    QIcon settingsIcon(":/settings_icon.svg");
-    QIcon userIcon(":/user_icon.svg");
-    QIcon statisticIcon(":/statistic_icon.svg");
-
-    btnSettings->setIcon(settingsIcon);
-    btnUser->setIcon(userIcon);
-    btnStatistic->setIcon(statisticIcon);
-    btnSettings->setStyleSheet(btnStyle);
-    btnUser->setStyleSheet(btnStyle);
-    btnStatistic->setStyleSheet(btnStyle);
-    btnSettings->setFixedSize(40,40);
-    btnUser->setFixedSize(40,40);
-    btnStatistic->setFixedSize(40,40);
-    settingsLayout->addWidget(btnSettings);
-    settingsLayout->addWidget(btnUser);
-    settingsLayout->addWidget(btnStatistic);
-    settingsLayout->setAlignment(Qt::AlignTop);
-
-    connect(btnUser, &QPushButton::clicked, this, &MenuWidget::onUserClicked);
-
-
-    authFormWidget = new QWidget(this);
-    QVBoxLayout *authLayout = new QVBoxLayout(authFormWidget);
-    authForm = new AuthForm(this);
-    authLayout->addWidget(authForm);
-
-    connect(authForm, &AuthForm::authCompleted, this, &MenuWidget::onAuthDone);
-    connect(authForm, &AuthForm::backClicked, this, &MenuWidget::onAuthBack);
-
-
-    stackedWidget->addWidget(mainMenuWidget);
-    stackedWidget->addWidget(authFormWidget);
 }
 
+void MenuWidget::setupUi() {
+    auto *layout = new QVBoxLayout(this);
+    m_stackedWidget = new QStackedWidget(this);
+    layout->addWidget(m_stackedWidget);
+
+    setStyleSheet("MenuWidget { background-image: url(:/background_main.png); }");
+
+    m_stackedWidget->addWidget(createMainMenu());
+    m_stackedWidget->addWidget(createAuthFormPage());
+}
+
+QWidget* MenuWidget::createMainMenu() {
+    auto *page = new QWidget(this);
+    auto *mainMenuLayout = new QVBoxLayout(page);
+    auto *settingsLayout = new QHBoxLayout();
+
+    mainMenuLayout->addLayout(settingsLayout);
+
+
+    QString btnStyle = "QPushButton { font-size: 20px; padding: 10px; background: #333; color: white; border-radius: 5px; }"
+                       "QPushButton:hover { background: #555; }";
+
+    auto createSmallBtn = [&](const QString& iconPath) {
+        auto *btn = new QPushButton(QIcon(iconPath), "");
+        btn->setFixedSize(40, 40);
+        btn->setStyleSheet(btnStyle);
+        settingsLayout->addWidget(btn);
+        return btn;
+    };
+
+    auto *btnSettings = createSmallBtn(":/settings_icon.svg");
+    auto *btnUser     = createSmallBtn(":/user_icon.svg");
+    auto *btnStatistic = createSmallBtn(":/statistic_icon.svg");
+    settingsLayout->setAlignment(Qt::AlignTop);
+
+
+    auto *title = new QLabel("QT TETRIS");
+    title->setStyleSheet("font-size: 40px; font-weight: bold; margin-bottom: 20px; background: transparent;");
+    title->setAlignment(Qt::AlignCenter);
+
+    m_nicknameLabel = new QLabel();
+    m_nicknameLabel->setAlignment(Qt::AlignCenter);
+    updateNicknameUI(SettingsManager::instance().nickname());
+
+    m_bestScoreTitle = new QLabel();
+    m_bestScoreTitle->setStyleSheet("font-size: 36px; font-weight: bold; margin-bottom: 10px; background: transparent;");
+    m_bestScoreTitle->setAlignment(Qt::AlignCenter);
+    updateBestScore();
+
+    m_totalLinesTitle = new QLabel();
+    m_totalLinesTitle->setStyleSheet("font-size: 20px; font-weight: bold; margin-bottom: 20px; color: #aaaaaa; background: transparent;");
+    m_totalLinesTitle->setAlignment(Qt::AlignCenter);
+    updateTotalLines();
+
+
+    auto *btnStart = new QPushButton("ИГРАТЬ");
+    auto *btnExit = new QPushButton("ВЫХОД");
+    btnStart->setStyleSheet(btnStyle);
+    btnExit->setStyleSheet(btnStyle);
+
+    mainMenuLayout->addWidget(title);
+    mainMenuLayout->addWidget(m_nicknameLabel);
+    mainMenuLayout->addStretch();
+    mainMenuLayout->addWidget(m_bestScoreTitle);
+    mainMenuLayout->addWidget(m_totalLinesTitle);
+    mainMenuLayout->addWidget(btnStart);
+    mainMenuLayout->addWidget(btnExit);
+    mainMenuLayout->addStretch();
+
+
+    connect(btnStart, &QPushButton::clicked, this, &MenuWidget::onStartClicked);
+    connect(btnExit, &QPushButton::clicked, this, &MenuWidget::onExitClicked);
+    connect(btnUser, &QPushButton::clicked, this, &MenuWidget::onUserClicked);
+
+    return page;
+}
+
+QWidget* MenuWidget::createAuthFormPage() {
+    auto *page = new QWidget(this);
+    auto *layout = new QVBoxLayout(page);
+    m_authForm = new AuthForm(this);
+    layout->addWidget(m_authForm);
+
+    connect(m_authForm, &AuthForm::authCompleted, this, &MenuWidget::onAuthDone);
+    connect(m_authForm, &AuthForm::backClicked, this, &MenuWidget::onAuthBack);
+    return page;
+}
+
+// --- Реализация слотов ---
+
 void MenuWidget::updateBestScore() {
-    bestScoreTitle->setText("BEST SCORE: " + QString::number(SettingsManager::instance().getMaxScore()));
+    m_bestScoreTitle->setText("BEST SCORE: " + QString::number(SettingsManager::instance().getMaxScore()));
 }
 
 void MenuWidget::updateTotalLines() {
-    totalLinesTitle->setText("ЛИНИИ: " + QString::number(SettingsManager::instance().totalyCoutLines()));
+    m_totalLinesTitle->setText("ЛИНИИ: " + QString::number(SettingsManager::instance().totalyCoutLines()));
+}
+
+void MenuWidget::updateNicknameUI(const QString& nickname) {
+    if (!nickname.isEmpty()) {
+        m_nicknameLabel->setText(nickname);
+        m_nicknameLabel->setStyleSheet("font-size: 18px; font-weight: bold; color: #4CAF50; background: transparent;");
+    } else {
+        m_nicknameLabel->setText("Гость");
+        m_nicknameLabel->setStyleSheet("font-size: 18px; color: #888888; background: transparent;");
+    }
 }
 
 void MenuWidget::onUserClicked() {
-
-    authForm->setNickname(SettingsManager::instance().nickname());
-    stackedWidget->setCurrentWidget(authFormWidget);
-    authForm->setFocus();
+    m_authForm->setNickname(SettingsManager::instance().nickname());
+    m_stackedWidget->setCurrentIndex(1);
+    m_authForm->setFocus();
 }
 
 void MenuWidget::onAuthBack() {
-    stackedWidget->setCurrentWidget(mainMenuWidget);
-    mainMenuWidget->setFocus();
+    m_stackedWidget->setCurrentIndex(0);
 }
 
 void MenuWidget::onAuthDone(const QString& nickname) {
     SettingsManager::instance().updateNickname(nickname);
+    updateNicknameUI(nickname);
     emit onAuthCompleted(nickname);
-    
-
-    if (!nickname.isEmpty()) {
-        nicknameLabel->setText(nickname);
-        nicknameLabel->setStyleSheet("font-size: 18px; font-weight: bold; color: #4CAF50; background: transparent;");
-    } else {
-        nicknameLabel->setText("Гость");
-        nicknameLabel->setStyleSheet("font-size: 18px; color: #888888; background: transparent;");
-    }
-    
-    stackedWidget->setCurrentWidget(mainMenuWidget);
-    mainMenuWidget->setFocus();
+    onAuthBack();
 }
