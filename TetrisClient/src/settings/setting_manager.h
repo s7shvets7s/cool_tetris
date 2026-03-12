@@ -34,20 +34,21 @@ public:
     
 
     int getTotalTETRISCleared() const { return m_totalTETRISCleared; }
-    void updateTotalTETRISCleared(int lines);
-    
+    void updateTotalTETRISCleared(int TETRISCleared);
+
     int getTotalTetrominoesPlaced() const { return m_totalTetrominoesPlaced; }
     void updateTotalTetrominoesPlaced(int count);
-    
-    int getTotalGameTime() const { return m_totalGameTime; }
-    void updateTotalGameTime(int seconds);
-    
+
+    long long getTotalGameTime() const { return m_totalGameTime; }
+    void updateTotalGameTime(long long seconds);
+
     int getAverageScore() const;
 
-    int getGamesWithMaxLineClear() const { return m_gamesWithMaxLineClear; }
+  //  int getGamesWithMaxLineClear() const { return m_gamesWithMaxLineClear; }
     void updateGamesWithMaxLineClear();
 
     int getTotalLinesCleared() const { return m_totalLinesCleared; }
+    void updateTotalLinesCleared(int lines);
 
     QString nickname() const { return m_nickname; }
     void updateNickname(const QString &newNickname);
@@ -76,15 +77,15 @@ private:
     QSettings* m_settings;
     
 
-    int m_MaxScore;
-    int m_totalyCoutLines;
-    int m_countGames;
+    int m_MaxScore; //+
+    int m_totalyCoutLines; //+
+    int m_countGames; //+
     int m_totalTETRISCleared;
     int m_totalLinesCleared;
     int m_totalTetrominoesPlaced;
-    int m_totalGameTime;
-    int m_gamesWithMaxLineClear;
-    
+    long long m_totalGameTime;
+    //int m_gamesWithMaxLineClear;
+    int m_maxLevelReached;
     QString m_nickname;
     
 
