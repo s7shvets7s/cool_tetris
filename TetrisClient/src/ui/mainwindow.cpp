@@ -54,7 +54,11 @@ void MainWindow::escClicked() {
 void MainWindow::onGameEnd()
 {
     SettingsManager::instance().updateTotalyCoutLines(gameWidget->fildWidget->getLogic().getLinesCleared());
+    SettingsManager::instance().updateTotalLinesCleared(gameWidget->fildWidget->getLogic().getLinesCleared());
     SettingsManager::instance().updateMaxScore(gameWidget->fildWidget->getLogic().getScore());
+    SettingsManager::instance().updateTotalGameTime(gameWidget->fildWidget->getLogic().getGameDuration());
+    SettingsManager::instance().updateTotalTETRISCleared(gameWidget->fildWidget->getLogic().getTotalTETRISLinesCleared());
+    SettingsManager::instance().updateTotalTetrominoesPlaced(gameWidget->fildWidget->getLogic().getCountTetrominosPlaced());
     SettingsManager::instance().updateCountGames();
     SettingsManager::instance().saveSettings();
     // scoresChanged() вызывается внутри updateTotalyCoutLines и updateMaxScore

@@ -1,5 +1,5 @@
 #include "game_over_widget.h"
-
+#include "setting_manager.h"
 GameOverWidget::GameOverWidget(QWidget *parent)
     : OverlayWidget{parent}
 {

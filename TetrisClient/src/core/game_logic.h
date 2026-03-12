@@ -5,6 +5,8 @@
 #include <vector>
 #include <deque>
 #include <QTimer>
+#include <QElapsedTimer>
+#include <chrono>
 #include "tetromino.h"
 
 class GameLogic : public QObject {
@@ -27,7 +29,7 @@ public:
     void swapPoketPiece();
     Tetromino getPoketPiece() const{return m_poketPiece;}
     int getScore() const {return score;}
-    
+
 
     void start();
     void pause();
@@ -35,11 +37,19 @@ public:
     void restart();
     bool isPaused() const { return m_isPaused; }
     bool isGameEnd() const { return m_isGameEnd; }
-    
+
 
     int getLevel() const { return level; }
     int getLinesCleared() const { return totalLines; }
+    int getTotalTETRISLinesCleared() const {return totalTETRISLines;}
+    int getCountTetrominosPlaced() const {return countTetrominosPlaced;}
     int getInterval() const { return currentInterval; }
+    long long getGameDuration() const {
+        if (m_gameElapsedTime.isValid()) {
+            return (m_elapsedWhilePaused + m_gameElapsedTime.elapsed()) / 1000;
+        }
+        return m_elapsedWhilePaused / 1000;
+    }
 
 
 signals:
@@ -55,6 +65,8 @@ private slots:
 
 private:
     void spawnPiece();
+    void resetVaribles();
+    void initVaribles();
     bool checkCollision(int dx, int dy, const Tetromino& piece);
     void freezePiece();
     void clearLines();
@@ -71,15 +83,23 @@ private:
     int m_x, m_y;
 
     std::deque<Tetromino> m_nextPieces;
-    
+
 
     QTimer *m_timer;
     bool m_isPaused;
     bool m_isGameEnd;
+
+    QElapsedTimer m_gameElapsedTime;
+    long long m_elapsedWhilePaused;
     int level;
     int totalLines;
+    int totalTETRISLines;
+
+    int countTetrominosPlaced;
+
     int linesToNextLevel;
     int currentInterval;
+
 };
 
 #endif

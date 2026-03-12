@@ -3,13 +3,9 @@
 #include <ctime>
 #include <cmath>
 #include <QDebug>
-GameLogic::GameLogic() {
-    score = 0;
-    level = 0;
-    totalLines = 0;
-    linesToNextLevel = 10;
-    m_isPaused = true;
 
+GameLogic::GameLogic() {
+    initVaribles();
     for (int y = 0; y < HEIGHT; ++y) {
         for (int x = 0; x < WIDTH; ++x) {
             board[y][x] = 0;
@@ -19,7 +15,6 @@ GameLogic::GameLogic() {
         m_nextPieces.push_back(Tetromino(static_cast<TetrominoType>((rand() % 7) + 1)));
     }
     spawnPiece();
-    
 
     m_timer = new QTimer(this);
     connect(m_timer, &QTimer::timeout, this, &GameLogic::onTimerTick);
@@ -29,32 +24,27 @@ GameLogic::GameLogic() {
 
 void GameLogic::start() {
     m_timer->start(currentInterval);
+    m_gameElapsedTime.start();
 }
 
 void GameLogic::pause() {
     if (!m_isPaused) {
         m_isPaused = true;
         m_timer->stop();
+        m_elapsedWhilePaused += m_gameElapsedTime.elapsed();
+        m_gameElapsedTime.invalidate();
     }
 }
 
 void GameLogic::resume() {
     m_isPaused = false;
     m_timer->start(currentInterval);
+    m_gameElapsedTime.start();
 }
 
 void GameLogic::restart()
 {
-    score = 0;
-    level = 0;
-
-    totalLines = 0;
-    linesToNextLevel = 10;
-    m_isPaused = false;
-    m_isGameEnd=false;
-    m_nextPieces.clear();
-    m_poketPiece=Empty;
-
+    resetVaribles();
 
     emit pocketChanged();
     emit scoreChanged();
@@ -69,6 +59,9 @@ void GameLogic::restart()
     spawnPiece();
 
 
+    m_elapsedWhilePaused = 0;
+    m_gameElapsedTime.invalidate();
+    m_gameElapsedTime.start();
 
     updateSpeed();
     //start();
@@ -116,6 +109,35 @@ void GameLogic::spawnPiece() {
     emit nextPiecesChanged();
 }
 
+void GameLogic::resetVaribles()
+{
+    score = 0;
+    level = 0;
+
+    totalLines = 0;
+    linesToNextLevel = 10;
+    totalTETRISLines=0;
+    countTetrominosPlaced=0;
+    m_isPaused = false;
+    m_isGameEnd=false;
+    m_nextPieces.clear();
+    m_poketPiece=Empty;
+    m_elapsedWhilePaused = 0;
+}
+
+void GameLogic::initVaribles()
+{
+    score = 0;
+    level = 0;
+    totalLines = 0;
+    linesToNextLevel = 10;
+    totalTETRISLines=0;
+    countTetrominosPlaced=0;
+    m_isPaused = true;
+    m_isGameEnd=false;
+    m_elapsedWhilePaused = 0;
+}
+
 bool GameLogic::checkCollision(int nx, int ny, const Tetromino& piece) {
     for (auto p : piece.getPoints(nx, ny)) {
         if (p.x < 0 || p.x >= WIDTH || p.y >= HEIGHT) return true;
@@ -161,6 +183,7 @@ void GameLogic::instaMoveDown()
 }
 
 void GameLogic::freezePiece() {
+    countTetrominosPlaced++;
     for (auto p : m_curPiece.getPoints(m_x, m_y)) {
         if (p.y >= 0) board[p.y][p.x] = static_cast<int>(m_curPiece.type());
     }
@@ -208,7 +231,7 @@ void GameLogic::updateScoreLine(int countLines)
     case 1: score+=100*(level+1); break;
     case 2: score+=300*(level+1); break;
     case 3: score+=500*(level+1); break;
-    case 4: score+=1200*(level+1); break;
+    case 4: score+=1200*(level+1); totalTETRISLines++; break;
     default:
         break;
     }

@@ -145,14 +145,14 @@ void StatisticWidget::updateStatistics()
 
     addStatRow("Nickname:", settings.nickname());
     addStatRow("Best Score:", QString::number(settings.getMaxScore()));
-    addStatRow("Total Lines:", QString::number(settings.totalyCoutLines()));
+    addStatRow("Best Lines:", QString::number(settings.totalyCoutLines()));
     addStatRow("Games Played:", QString::number(settings.getCountGames()));
     addStatRow("Average Score:", QString::number(settings.getAverageScore()));
     addStatRow("TETRIS (4 lines):", QString::number(settings.getTotalTETRISCleared()));
     addStatRow("Total Lines (all games):", QString::number(settings.getTotalLinesCleared()));
     addStatRow("Tetrominoes Placed:", QString::number(settings.getTotalTetrominoesPlaced()));
     addStatRow("Time Played:", formatTime(settings.getTotalGameTime()));
-    addStatRow("Games with 4 lines:", QString::number(settings.getGamesWithMaxLineClear()));
+   // addStatRow("Games with 4 lines:", QString::number(settings.getGamesWithMaxLineClear()));
 
     m_statsLayout->addStretch();
 }
