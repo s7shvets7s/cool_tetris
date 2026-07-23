@@ -35,10 +35,10 @@ docs/images/gameplay.png
 
 <div align="center">
 
-<img src="<img width="583" height="726" alt="image" src="https://github.com/user-attachments/assets/63f8a865-c8e1-438e-b6d8-15f112b17200" />
-" alt="Cool Tetris main menu" width="46%">
-<img <img width="583" height="729" alt="image" src="https://github.com/user-attachments/assets/6c210944-6aa1-4a34-9920-376ec6964e29" />
- alt="Cool Tetris gameplay" width="46%">
+<image src="https://github.com/user-attachments/assets/63f8a865-c8e1-438e-b6d8-15f112b17200"  alt="Cool Tetris main menu" width="46%">
+
+<image src="https://github.com/user-attachments/assets/6c210944-6aa1-4a34-9920-376ec6964e29" alt="Cool Tetris gameplay" width="46%">
+ 
 
 </div>
 
