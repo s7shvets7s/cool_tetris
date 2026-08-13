@@ -17,7 +17,8 @@
 
 ---
 
-## Screenshots
+
+##  Screenshots
 
 <!--
 Create the following directory in the repository:
